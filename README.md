@@ -1,7 +1,7 @@
-# [Google Route Map]
+# Google Route Map
 
-[![Build Status]
-[![devDependency Status]
+[![Build Status]]
+[![devDependency Status]]
 
 ## Features
 
