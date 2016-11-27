@@ -1,0 +1,81 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/style.css">
+        <title>Route Map - GoogleBoy</title>
+    </head>
+    <body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12"> <h3>Route Map - GoogleBoy</h3> </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                <div id="RouteMap"></div>
+            </div>
+
+            <div class="col-md-3">
+                <form action="#" class="form-horizontal">
+                    <div class="form-group">
+                        <label for="start"> Start Journey </label>
+                        <input type="text" id="start" class="form-control location">
+                    </div>
+
+                    <div class="form-group">
+                        <label> End Journey </label>
+                        <input type="text" id="end" class="form-control location route">
+                    </div>
+
+                    <div class="form-group">
+                        <hr class="separator">
+                    </div>
+                    <div class="form-group">
+                        <label> Route 1 </label>
+                        <input type="text" class="form-control location route">
+                    </div>
+
+                    <div class="form-group">
+                        <label> Route 2 </label>
+                        <input type="text" class="form-control location route">
+                    </div>
+
+                    <div class="RouteInput"> </div>
+
+                    <div class="form-group">
+                        <button type="button" class="addMore btn btn-sm btn-info">Add Route</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <script>
+        Modernizr.load({
+            load: 'js/RouteMap.js',
+            complete: function () {
+                $(document).ready(function() {
+                    RouteMap.init();
+                });
+            }
+        });
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBi8WzTrO14PRzaziKEwF2LEnE_7rwKBPM&libraries=places"></script>
+    </body>
+</html>
