@@ -1,11 +1,8 @@
 # Google Route Map
 
-[![Build Status]]
-[![devDependency Status]]
-
 ## Features
 
-* Custom code to find the route between source to destination.
+* Custom code to find the route between source to destination in google map.
 
 ## License
 
