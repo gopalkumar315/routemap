@@ -1,7 +1,24 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
 #RouteMap {
-    height:700px;
+    height:100%;
+    display:block;
 }
 
 .del-btn {
     margin-top:5px;
+}
+
+.navbar {
+    border-radius: 0;
+    margin-bottom: 0;
+}
+.navbar-inverse .navbar-brand {
+    color:#fff;
+}
+
+.form-control {
+    border-radius: 0;
 }
