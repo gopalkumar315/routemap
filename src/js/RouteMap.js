@@ -5,14 +5,41 @@ RouteMap = function () {
 
     var directionsService ='';
     var directionsDisplay ='';
+    var map ='';
 
+    var icons = {
+        start: new google.maps.MarkerImage(
+            // URL
+            'start.png',
+            // (width,height)
+            new google.maps.Size( 44, 32 ),
+            // The origin point (x,y)
+            new google.maps.Point( 0, 0 ),
+            // The anchor point (x,y)
+            new google.maps.Point( 22, 32 )
+        ),
+        end: new google.maps.MarkerImage(
+            // URL
+            'end.png',
+            // (width,height)
+            new google.maps.Size( 44, 32 ),
+            // The origin point (x,y)
+            new google.maps.Point( 0, 0 ),
+            // The anchor point (x,y)
+            new google.maps.Point( 22, 32 )
+        )
+    };
+
+    var map ='';
     var initMap = function() {
         directionsService  = new google.maps.DirectionsService;
-        directionsDisplay = new google.maps.DirectionsRenderer;
-        var map = new google.maps.Map(document.getElementById('RouteMap'), {
+        directionsDisplay = new google.maps.DirectionsRenderer();
+
+        map = new google.maps.Map(document.getElementById('RouteMap'), {
             zoom: 5,
             center: {lat: 20.5937, lng: 78.9629}
         });
+
         directionsDisplay.setMap(map);
         initHandler();
     };
@@ -31,6 +58,7 @@ RouteMap = function () {
     };
 
     var fillInAddress = function(result) {
+        var result = autocomplete.getPlace();
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
@@ -41,6 +69,7 @@ RouteMap = function () {
                 waypts.push({
                     location: $(this).val(),
                     stopover: true
+
                 });
             }
         })
@@ -57,16 +86,39 @@ RouteMap = function () {
             destination: destination,
             waypoints: waypts,
             optimizeWaypoints: true,
+            provideRouteAlternatives: false,
             travelMode: 'DRIVING'
         }, function(response, status) {
             console.log(response);
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
-                console.log(response);
+                var route = response.routes[0];
+
+                for (var i = 0; i < route.legs.length; i++) {
+                    if(route.legs[i].distance.text == '1 m') {
+                        makeMarker( route.legs[i].start_location, icons.start, route.legs[i].start_address);
+                    } else {
+                        makeMarker( route.legs[i].start_location, icons.start, route.legs[i].start_address+' '+route.legs[i].distance.text);
+                    }
+                }
+
             } else {
                 window.alert('Directions request failed due to ' + status);
             }
         });
+    }
+
+    function makeMarker( position, icon, title ) {
+        var marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            title:title
+        });
+
+        var infowindow = new google.maps.InfoWindow({
+            content: '<div>'+title+'</div>'
+        });
+        infowindow.open(map, marker);
     }
 
     $('.addMore').click(function () {
