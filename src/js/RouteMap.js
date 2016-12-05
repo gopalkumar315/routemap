@@ -5,35 +5,13 @@ RouteMap = function () {
 
     var directionsService ='';
     var directionsDisplay ='';
+    var geocoder = '';
     var map ='';
 
-    var icons = {
-        start: new google.maps.MarkerImage(
-            // URL
-            'start.png',
-            // (width,height)
-            new google.maps.Size( 44, 32 ),
-            // The origin point (x,y)
-            new google.maps.Point( 0, 0 ),
-            // The anchor point (x,y)
-            new google.maps.Point( 22, 32 )
-        ),
-        end: new google.maps.MarkerImage(
-            // URL
-            'end.png',
-            // (width,height)
-            new google.maps.Size( 44, 32 ),
-            // The origin point (x,y)
-            new google.maps.Point( 0, 0 ),
-            // The anchor point (x,y)
-            new google.maps.Point( 22, 32 )
-        )
-    };
-
-    var map ='';
     var initMap = function() {
         directionsService  = new google.maps.DirectionsService;
         directionsDisplay = new google.maps.DirectionsRenderer();
+        geocoder = new google.maps.Geocoder();
 
         map = new google.maps.Map(document.getElementById('RouteMap'), {
             zoom: 5,
@@ -64,12 +42,12 @@ RouteMap = function () {
 
     var calculateAndDisplayRoute = function(directionsService, directionsDisplay) {
         var waypts = []; var destination = '';
+
         $('.route').each(function () {
             if($(this).val() != '') {
                 waypts.push({
                     location: $(this).val(),
                     stopover: true
-
                 });
             }
         })
@@ -78,8 +56,11 @@ RouteMap = function () {
             destination = document.getElementById('end').value;
         }
         else {
-            destination = document.getElementById('start').value;
+            OriginLocation = document.getElementById('start').value
+            setOriginLocation(OriginLocation);
+            return '';
         }
+        ResetMap();
 
         directionsService.route({
             origin: document.getElementById('start').value,
@@ -89,26 +70,23 @@ RouteMap = function () {
             provideRouteAlternatives: false,
             travelMode: 'DRIVING'
         }, function(response, status) {
-            console.log(response);
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
                 var route = response.routes[0];
-
                 for (var i = 0; i < route.legs.length; i++) {
                     if(route.legs[i].distance.text == '1 m') {
-                        makeMarker( route.legs[i].start_location, icons.start, route.legs[i].start_address);
+                        makeMarker( route.legs[i].start_location, route.legs[i].start_address);
                     } else {
-                        makeMarker( route.legs[i].start_location, icons.start, route.legs[i].start_address+' '+route.legs[i].distance.text);
+                        makeMarker( route.legs[i].start_location, route.legs[i].start_address+' '+route.legs[i].distance.text);
                     }
                 }
-
             } else {
                 window.alert('Directions request failed due to ' + status);
             }
         });
     }
 
-    function makeMarker( position, icon, title ) {
+    function makeMarker( position, title ) {
         var marker = new google.maps.Marker({
             position: position,
             map: map,
@@ -138,6 +116,29 @@ RouteMap = function () {
         });
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
+
+    setOriginLocation = function (address,status) {
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                //places a marker on every location
+                new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    };
+
+    ResetMap = function (){
+        map = new google.maps.Map(document.getElementById('RouteMap'), {
+            zoom: 5,
+            center: {lat: 20.5937, lng: 78.9629}
+        });
+        directionsDisplay.setMap(map);
+    }
 
     return{
         init: function () {
