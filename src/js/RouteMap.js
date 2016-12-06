@@ -74,11 +74,7 @@ RouteMap = function () {
                 directionsDisplay.setDirections(response);
                 var route = response.routes[0];
                 for (var i = 0; i < route.legs.length; i++) {
-                    if(route.legs[i].distance.text == '1 m') {
-                        makeMarker( route.legs[i].start_location, route.legs[i].start_address);
-                    } else {
-                        makeMarker( route.legs[i].start_location, route.legs[i].start_address+' '+route.legs[i].distance.text);
-                    }
+                    makeMarker( route.legs[i].start_location, route.legs[i].start_address+' '+route.legs[i].distance.text+' ('+route.legs[i].duration.text+')');                              
                 }
             } else {
                 window.alert('Directions request failed due to ' + status);
@@ -122,9 +118,9 @@ RouteMap = function () {
             if (status == google.maps.GeocoderStatus.OK) {
                 map.setCenter(results[0].geometry.location);
                 //places a marker on every location
-                new google.maps.Marker({
+                marker = new google.maps.Marker({
                     map: map,
-                    position: results[0].geometry.location
+                    position: results[0].geometry.location                    
                 });
             } else {
                 alert('Geocode was not successful for the following reason: ' + status);
