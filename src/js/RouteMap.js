@@ -59,22 +59,24 @@ RouteMap = function () {
             OriginLocation = document.getElementById('start').value
             setOriginLocation(OriginLocation);
             return '';
-        }
-        ResetMap();
+        }        
 
         directionsService.route({
             origin: document.getElementById('start').value,
             destination: destination,
-            waypoints: waypts,
-            optimizeWaypoints: true,
-            provideRouteAlternatives: false,
+            waypoints: waypts,          
             travelMode: 'DRIVING'
         }, function(response, status) {
             if (status === 'OK') {
+                ResetMap();
                 directionsDisplay.setDirections(response);
-                var route = response.routes[0];
-                for (var i = 0; i < route.legs.length; i++) {
-                    makeMarker( route.legs[i].start_location, route.legs[i].start_address+' '+route.legs[i].distance.text+' ('+route.legs[i].duration.text+')');                              
+                var route = response.routes[0];                
+                Routelength = route.legs.length;
+                for (var i = 0; i < route.legs.length; i++) {                            
+                    if(i == (Routelength-1)) {                        
+                        makeMarker( route.legs[i].end_location, route.legs[i].end_address);                              
+                    }
+                    makeMarker(route.legs[i].start_location, route.legs[i].start_address+' '+route.legs[i].distance.text+' ('+route.legs[i].duration.text+')');                    
                 }
             } else {
                 window.alert('Directions request failed due to ' + status);
@@ -86,13 +88,14 @@ RouteMap = function () {
         var marker = new google.maps.Marker({
             position: position,
             map: map,
-            title:title
+            title:title          
         });
 
         var infowindow = new google.maps.InfoWindow({
-            content: '<div>'+title+'</div>'
+            content: '<div>'+title+'</div>',
+            visible:false
         });
-        infowindow.open(map, marker);
+        infowindow.open(map, marker);             
     }
 
     $('.addMore').click(function () {
